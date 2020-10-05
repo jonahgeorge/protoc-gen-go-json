@@ -25,7 +25,9 @@ var _ json.Marshaler = (*Basic)(nil)
 // BasicJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
 // instances of Basic. This struct is safe to replace or modify but
 // should not be done so concurrently.
-var BasicJSONUnmarshaler = protojson.UnmarshalOptions{}
+var BasicJSONUnmarshaler = protojson.UnmarshalOptions{
+	DiscardUnknown: true,
+}
 
 // UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
 // uses the more correct jsonpb package to correctly unmarshal the message.

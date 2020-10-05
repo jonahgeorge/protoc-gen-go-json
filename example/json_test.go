@@ -7,6 +7,7 @@ import (
 
 func TestJSONUnmarshal(t *testing.T) {
 	buf := `{
+    "b": "what",
     "a": "Hello",
     "meta": {
       "hello": "world"

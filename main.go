@@ -34,11 +34,11 @@ func (p *JSONifyModule) InitContext(c pgs.BuildContext) {
 	p.ctx = pgsgo.InitContext(c.Parameters())
 
 	tpl := template.New("jsonify").Funcs(map[string]interface{}{
-		"package":       p.ctx.PackageName,
-		"name":          p.ctx.Name,
-		"marshaler":     p.marshaler,
-		"unmarshaler":   p.unmarshaler,
-		"allow_unknown": p.allowUnknown,
+		"package":         p.ctx.PackageName,
+		"name":            p.ctx.Name,
+		"marshaler":       p.marshaler,
+		"unmarshaler":     p.unmarshaler,
+		"discard_unknown": p.discardUnknown,
 	})
 
 	p.tpl = template.Must(tpl.Parse(jsonifyTpl))
@@ -64,8 +64,8 @@ func (p *JSONifyModule) generate(f pgs.File) {
 	p.AddGeneratorTemplateFile(name.String(), p.tpl, f)
 }
 
-func (p *JSONifyModule) allowUnknown(m pgs.Message) bool {
-	b, err := p.ctx.Params().Bool("allow_unknown")
+func (p *JSONifyModule) discardUnknown(m pgs.Message) bool {
+	b, err := p.ctx.Params().Bool("discard_unknown")
 	if err != nil {
 		return false
 	}
@@ -108,7 +108,9 @@ var _ json.Marshaler = (*{{ name . }})(nil)
 // {{ unmarshaler . }} describes the default jsonpb.Unmarshaler used by all
 // instances of {{ name . }}. This struct is safe to replace or modify but
 // should not be done so concurrently.
-var {{ unmarshaler . }} = protojson.UnmarshalOptions{}
+var {{ unmarshaler . }} = protojson.UnmarshalOptions{
+  DiscardUnknown: {{ discard_unknown . }},
+}
 
 // UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
 // uses the more correct jsonpb package to correctly unmarshal the message.
