@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package e2e;
+
+option go_package = "github.com/jonahgeorge/protoc-gen-gogo-json/example;e2e";
+
+import "google/protobuf/struct.proto";
+
+message Basic {
+  string a = 1;
+  google.protobuf.Struct meta = 2;
+}
